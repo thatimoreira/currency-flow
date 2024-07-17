@@ -11,19 +11,23 @@ import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 
 public class APIService {
-    private static final String API_URL = "https://api.exchangerate-api.com/v4/latest/USD";
+    private static final String API_KEY = "34870654ca9d4c1240cca55f";
+    private static final String BASE_URL = "https://v6.exchangerate-api.com/v6/";
+    private static final String ENDPOINT = "/latest/";
 
-    public static JsonObject fetchExchangeRates() {
+    public static JsonObject fetchExchangeRates(String baseCurrency) {
+        String url = BASE_URL + API_KEY + ENDPOINT + baseCurrency;
+
         try {
             HttpClient client = HttpClient.newHttpClient();
             HttpRequest request = HttpRequest.newBuilder()
-                    .uri(URI.create(API_URL))
+                    .uri(URI.create(url))
                     .build();
 
             HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
             return JsonParser.parseString(response.body()).getAsJsonObject();
         } catch (IOException | InterruptedException e) {
-            throw new APIException("Error fetching exchange rates: " + e.getMessage());
+            throw new APIException("Erro ao buscar taxas de câmbio: " + e.getMessage());
         }
     }
 }
