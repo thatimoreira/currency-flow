@@ -10,10 +10,10 @@ import java.util.Map;
 public class CurrencyService {
     private final Map<String, Currency> currencyMap = new HashMap<>();
 
-    public CurrencyService() {
+    public CurrencyService(String fromCurrency) {
         try {
-            JsonObject exchangeRates = APIService.fetchExchangeRates();
-            JsonObject rates = exchangeRates.getAsJsonObject("rates");
+            JsonObject exchangeRates = APIService.fetchExchangeRates(fromCurrency);
+            JsonObject rates = exchangeRates.getAsJsonObject("conversion_rates");
 
             for (String key : rates.keySet()) {
                 currencyMap.put(key, new Currency(key, rates.get(key).getAsDouble()));
@@ -23,13 +23,12 @@ public class CurrencyService {
         }
     }
 
-    public double convert(String fromCurrency, String toCurrency, double amount) {
-        if (currencyMap.containsKey(fromCurrency) && currencyMap.containsKey(toCurrency)) {
-            double fromRate = currencyMap.get(fromCurrency).getRate();
+    public double convert(String toCurrency, double amount) {
+        if (currencyMap.containsKey(toCurrency)) {
             double toRate = currencyMap.get(toCurrency).getRate();
-            return amount * (toRate / fromRate);
+            return amount * toRate;
         } else {
-            throw new IllegalArgumentException("Invalid currency code");
+            throw new IllegalArgumentException("Código de moeda inválido");
         }
     }
 }
