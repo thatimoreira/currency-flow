@@ -6,36 +6,44 @@ import java.util.Scanner;
 
 public class App {
     public static void main(String[] args) {
-        CurrencyService currencyService = new CurrencyService();
         Scanner scanner = new Scanner(System.in);
 
-        System.out.println("Welcome to Currency-Flow Converter!");
+        System.out.println("\n============== CURRENCY FLOW ==============");
 
         while (true) {
-            System.out.println("Select the currency you want to convert from (e.g., USD, EUR): ");
+            System.out.print("\nDigite a moeda de origem (ex: BRL, USD, EUR): ");
             String fromCurrency = scanner.nextLine().toUpperCase();
 
-            System.out.println("Select the currency you want to convert to (e.g., USD, EUR): ");
+            CurrencyService currencyService = new CurrencyService(fromCurrency);
+
+            System.out.print("Digite a moeda de destino (ex: BRL, USD, EUR): ");
             String toCurrency = scanner.nextLine().toUpperCase();
 
-            System.out.println("Enter the amount to convert: ");
+            System.out.print("Digite o valor a ser convertido: ");
             double amount = scanner.nextDouble();
-            scanner.nextLine();  // Consume newline
+            scanner.nextLine();
 
             try {
-                double convertedAmount = currencyService.convert(fromCurrency, toCurrency, amount);
-                System.out.printf("Converted amount: %.2f %s\n", convertedAmount, toCurrency);
+                double convertedAmount = currencyService.convert(toCurrency, amount);
+                System.out.printf("\nValor convertido: %.2f %s\n\n", convertedAmount, toCurrency);
             } catch (IllegalArgumentException e) {
                 System.err.println(e.getMessage());
             }
 
-            System.out.println("Do you want to perform another conversion? (yes/no): ");
-            String response = scanner.nextLine().toLowerCase();
-            if (!response.equals("yes")) {
+            System.out.println("Escolha uma opção: ");
+            System.out.println("0 - Sair");
+            System.out.println("1  - Continuar");
+            int option = scanner.nextInt();
+            scanner.nextLine();
+
+            if (option == 0) {
+                break;
+            } else if (option != 1) {
+                System.out.println("Opção inválida! Consulta encerrada.");
                 break;
             }
         }
 
-        System.out.println("Thank you for using Currency-Flow Converter!");
+        System.out.println("\nConsulta encerrada com sucesso!");
     }
 }
